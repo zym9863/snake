@@ -236,152 +236,153 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(14),
                     child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      double cellSize = constraints.maxWidth / _game.gridSize;
-                      return Stack(
-                        children: [
-                          // 背景图片
-                          Positioned.fill(
-                            child: Image.asset(
-                              'assets/generated_1741655967983.png',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          // 绘制网格线（可选）
-                          GridView.builder(
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: _game.gridSize,
-                            ),
-                            itemCount: _game.gridSize * _game.gridSize,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: GameTheme.gridLineColor.withOpacity(0.3)),
-                                ),
-                              );
-                            },
-                          ),
-                          
-                          // 绘制蛇
-                          ...List.generate(_game.snake.length, (index) {
-                            final part = _game.snake[index];
-                            return Positioned(
-                              left: part.x * cellSize,
-                              top: part.y * cellSize,
-                              width: cellSize,
-                              height: cellSize,
-                              child: Container(
-                                margin: const EdgeInsets.all(1),
-                                decoration: BoxDecoration(
-                                  color: index == 0 
-                                    ? GameTheme.snakeHeadColor 
-                                    : GameTheme.getSnakeBodyColor(index, _game.snake.length, _game.score),
-                                  borderRadius: BorderRadius.circular(index == 0 ? 6 : 4),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: index == 0 
-                                        ? GameTheme.snakeHeadColor.withOpacity(0.8) 
-                                        : GameTheme.getSnakeBodyColor(index, _game.snake.length, _game.score).withOpacity(0.5),
-                                      blurRadius: index == 0 ? 12 : 8,
-                                      spreadRadius: index == 0 ? 2 : 1,
-                                    ),
-                                  ],
-                                ),
-                                child: index == 0 
-                                  ? Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          width: cellSize * 0.15,
-                                          height: cellSize * 0.15,
-                                          margin: EdgeInsets.only(top: cellSize * 0.25),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.white.withOpacity(0.8),
-                                                blurRadius: 3,
-                                                spreadRadius: 1,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          width: cellSize * 0.15,
-                                          height: cellSize * 0.15,
-                                          margin: EdgeInsets.only(top: cellSize * 0.25),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.white.withOpacity(0.8),
-                                                blurRadius: 3,
-                                                spreadRadius: 1,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : null,
+                      builder: (context, constraints) {
+                        double cellSize = constraints.maxWidth / _game.gridSize;
+                        return Stack(
+                          children: [
+                            // 背景图片
+                            Positioned.fill(
+                              child: Image.asset(
+                                'assets/generated_1741655967983.png',
+                                fit: BoxFit.cover,
                               ),
-                            );
-                          }),
-                          
-                          // 绘制食物 - 带脉冲动画
-                          AnimatedBuilder(
-                            animation: _foodAnimation,
-                            builder: (context, child) {
-                              return Positioned(
-                                left: _game.food.x * cellSize + (cellSize * (1 - _foodAnimation.value) / 2),
-                                top: _game.food.y * cellSize + (cellSize * (1 - _foodAnimation.value) / 2),
-                                width: cellSize * _foodAnimation.value,
-                                height: cellSize * _foodAnimation.value,
-                                child: Container(
-                                  margin: const EdgeInsets.all(2),
+                            ),
+                            // 绘制网格线（可选）
+                            GridView.builder(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: _game.gridSize,
+                              ),
+                              itemCount: _game.gridSize * _game.gridSize,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return Container(
                                   decoration: BoxDecoration(
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        GameTheme.foodColor,
-                                        GameTheme.foodColor.withOpacity(0.8),
-                                      ],
-                                      center: Alignment.center,
-                                      radius: 0.8,
-                                    ),
-                                    borderRadius: BorderRadius.circular(cellSize / 2),
+                                    border: Border.all(color: GameTheme.gridLineColor.withOpacity(0.3)),
+                                  ),
+                                );
+                              },
+                            ),
+                            
+                            // 绘制蛇
+                            ...List.generate(_game.snake.length, (index) {
+                              final part = _game.snake[index];
+                              return Positioned(
+                                left: part.x * cellSize,
+                                top: part.y * cellSize,
+                                width: cellSize,
+                                height: cellSize,
+                                child: Container(
+                                  margin: const EdgeInsets.all(1),
+                                  decoration: BoxDecoration(
+                                    color: index == 0 
+                                      ? GameTheme.snakeHeadColor 
+                                      : GameTheme.getSnakeBodyColor(index, _game.snake.length, _game.score),
+                                    borderRadius: BorderRadius.circular(index == 0 ? 6 : 4),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: GameTheme.foodGlowColor.withOpacity(0.8),
-                                        blurRadius: 15,
-                                        spreadRadius: 3,
-                                      ),
-                                      BoxShadow(
-                                        color: GameTheme.foodGlowColor.withOpacity(0.5),
-                                        blurRadius: 25,
-                                        spreadRadius: 5,
+                                        color: index == 0 
+                                          ? GameTheme.snakeHeadColor.withOpacity(0.8) 
+                                          : GameTheme.getSnakeBodyColor(index, _game.snake.length, _game.score).withOpacity(0.5),
+                                        blurRadius: index == 0 ? 12 : 8,
+                                        spreadRadius: index == 0 ? 2 : 1,
                                       ),
                                     ],
                                   ),
-                                  child: Center(
-                                    child: Container(
-                                      width: cellSize * 0.3,
-                                      height: cellSize * 0.3,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.6),
-                                        shape: BoxShape.circle,
+                                  child: index == 0 
+                                    ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Container(
+                                            width: cellSize * 0.15,
+                                            height: cellSize * 0.15,
+                                            margin: EdgeInsets.only(top: cellSize * 0.25),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.white.withOpacity(0.8),
+                                                  blurRadius: 3,
+                                                  spreadRadius: 1,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            width: cellSize * 0.15,
+                                            height: cellSize * 0.15,
+                                            margin: EdgeInsets.only(top: cellSize * 0.25),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.white.withOpacity(0.8),
+                                                  blurRadius: 3,
+                                                  spreadRadius: 1,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : null,
+                                ),
+                              );
+                            }),
+                            
+                            // 绘制食物 - 带脉冲动画
+                            AnimatedBuilder(
+                              animation: _foodAnimation,
+                              builder: (context, child) {
+                                return Positioned(
+                                  left: _game.food.x * cellSize + (cellSize * (1 - _foodAnimation.value) / 2),
+                                  top: _game.food.y * cellSize + (cellSize * (1 - _foodAnimation.value) / 2),
+                                  width: cellSize * _foodAnimation.value,
+                                  height: cellSize * _foodAnimation.value,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          GameTheme.foodColor,
+                                          GameTheme.foodColor.withOpacity(0.8),
+                                        ],
+                                        center: Alignment.center,
+                                        radius: 0.8,
+                                      ),
+                                      borderRadius: BorderRadius.circular(cellSize / 2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: GameTheme.foodGlowColor.withOpacity(0.8),
+                                          blurRadius: 15,
+                                          spreadRadius: 3,
+                                        ),
+                                        BoxShadow(
+                                          color: GameTheme.foodGlowColor.withOpacity(0.5),
+                                          blurRadius: 25,
+                                          spreadRadius: 5,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                        width: cellSize * 0.3,
+                                        height: cellSize * 0.3,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.6),
+                                          shape: BoxShape.circle,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
