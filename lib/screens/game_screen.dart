@@ -105,19 +105,26 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       appBar: AppBar(
         title: const Text('贪吃蛇游戏', 
           style: TextStyle(
-            fontSize: 24, 
+            fontSize: 26, 
             fontWeight: FontWeight.bold,
             color: Colors.white,
             shadows: [
               Shadow(
                 color: Color(0xFF00E5FF),
-                blurRadius: 10,
+                blurRadius: 15,
+                offset: Offset(0, 0),
+              ),
+              Shadow(
+                color: Color(0xFF00E5FF),
+                blurRadius: 30,
                 offset: Offset(0, 0),
               ),
             ],
           ),
         ),
+        centerTitle: true,
         backgroundColor: GameTheme.backgroundColor,
+        elevation: 0,
         actions: [
           // 显示分数
           Center(
@@ -128,9 +135,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 builder: (context, child) {
                   return Transform.scale(
                     scale: _scoreAnimation.value,
-                    child: Text(
-                      '分数: ${_game.score}',
-                      style: GameTheme.scoreTextStyle,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: GameTheme.scoreColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: GameTheme.scoreColor.withOpacity(0.5),
+                          width: 2,
+                        ),
+                      ),
+                      child: Text(
+                        '分数: ${_game.score}',
+                        style: GameTheme.scoreTextStyle,
+                      ),
                     ),
                   );
                 },
@@ -150,12 +168,42 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             if (_game.gameState == GameState.gameOver)
               Container(
                 width: double.infinity,
-                color: GameTheme.gameOverColor.withOpacity(0.3),
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  '游戏结束！',
-                  textAlign: TextAlign.center,
-                  style: GameTheme.gameOverTextStyle,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      GameTheme.gameOverColor.withOpacity(0.5),
+                      GameTheme.gameOverColor.withOpacity(0.2),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    Text(
+                      '游戏结束！',
+                      textAlign: TextAlign.center,
+                      style: GameTheme.gameOverTextStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '最终得分: ${_game.score}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: GameTheme.scoreColor,
+                        shadows: [
+                          Shadow(
+                            color: GameTheme.scoreGlowColor.withOpacity(0.8),
+                            blurRadius: 10,
+                            offset: Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             
@@ -166,17 +214,28 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 child: Container(
                   margin: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
-                    border: Border.all(color: GameTheme.gridLineColor, width: 2.0),
+                    border: Border.all(
+                      color: GameTheme.gridLineColor, 
+                      width: 3.0,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
                     color: GameTheme.backgroundColor,
                     boxShadow: [
                       BoxShadow(
-                        color: GameTheme.snakeHeadColor.withOpacity(0.3),
-                        blurRadius: 15,
+                        color: GameTheme.snakeHeadColor.withOpacity(0.4),
+                        blurRadius: 20,
                         spreadRadius: 5,
+                      ),
+                      BoxShadow(
+                        color: GameTheme.foodColor.withOpacity(0.3),
+                        blurRadius: 30,
+                        spreadRadius: 2,
                       ),
                     ],
                   ),
-                  child: LayoutBuilder(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: LayoutBuilder(
                     builder: (context, constraints) {
                       double cellSize = constraints.maxWidth / _game.gridSize;
                       return Stack(
@@ -218,17 +277,56 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                   color: index == 0 
                                     ? GameTheme.snakeHeadColor 
                                     : GameTheme.getSnakeBodyColor(index, _game.snake.length, _game.score),
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(index == 0 ? 6 : 4),
                                   boxShadow: [
                                     BoxShadow(
                                       color: index == 0 
-                                        ? GameTheme.snakeHeadColor.withOpacity(0.7) 
+                                        ? GameTheme.snakeHeadColor.withOpacity(0.8) 
                                         : GameTheme.getSnakeBodyColor(index, _game.snake.length, _game.score).withOpacity(0.5),
-                                      blurRadius: 8,
-                                      spreadRadius: 1,
+                                      blurRadius: index == 0 ? 12 : 8,
+                                      spreadRadius: index == 0 ? 2 : 1,
                                     ),
                                   ],
                                 ),
+                                child: index == 0 
+                                  ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          width: cellSize * 0.15,
+                                          height: cellSize * 0.15,
+                                          margin: EdgeInsets.only(top: cellSize * 0.25),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.white.withOpacity(0.8),
+                                                blurRadius: 3,
+                                                spreadRadius: 1,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: cellSize * 0.15,
+                                          height: cellSize * 0.15,
+                                          margin: EdgeInsets.only(top: cellSize * 0.25),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.white.withOpacity(0.8),
+                                                blurRadius: 3,
+                                                spreadRadius: 1,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : null,
                               ),
                             );
                           }),
@@ -245,15 +343,37 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                                 child: Container(
                                   margin: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
-                                    color: GameTheme.foodColor,
+                                    gradient: RadialGradient(
+                                      colors: [
+                                        GameTheme.foodColor,
+                                        GameTheme.foodColor.withOpacity(0.8),
+                                      ],
+                                      center: Alignment.center,
+                                      radius: 0.8,
+                                    ),
                                     borderRadius: BorderRadius.circular(cellSize / 2),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: GameTheme.foodGlowColor.withOpacity(0.7),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
+                                        color: GameTheme.foodGlowColor.withOpacity(0.8),
+                                        blurRadius: 15,
+                                        spreadRadius: 3,
+                                      ),
+                                      BoxShadow(
+                                        color: GameTheme.foodGlowColor.withOpacity(0.5),
+                                        blurRadius: 25,
+                                        spreadRadius: 5,
                                       ),
                                     ],
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                      width: cellSize * 0.3,
+                                      height: cellSize * 0.3,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.6),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               );
@@ -272,6 +392,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  // Direction buttons with better spacing
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -280,18 +401,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       }),
                     ],
                   ),
+                  const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildDirectionButton(Icons.arrow_back, () {
                         _game.changeDirection(Direction.left);
                       }),
-                      const SizedBox(width: 50),
+                      const SizedBox(width: 80),
                       _buildDirectionButton(Icons.arrow_forward, () {
                         _game.changeDirection(Direction.right);
                       }),
                     ],
                   ),
+                  const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -300,7 +423,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       }),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -316,7 +439,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         child: Text(
                           _game.gameState == GameState.playing ? '暂停' : 
                           _game.gameState == GameState.gameOver ? '重新开始' : '开始',
-                          style: const TextStyle(fontSize: 18),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -327,14 +450,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: GameTheme.resetButtonColor,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          elevation: 8,
-                          shadowColor: GameTheme.resetButtonColor.withOpacity(0.5),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          elevation: 10,
+                          shadowColor: GameTheme.resetButtonColor.withOpacity(0.6),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        ).copyWith(
+                          overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.2)),
                         ),
                         child: const Text(
                           '重置',
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],

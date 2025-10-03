@@ -67,11 +67,13 @@ class GameTheme {
   // 按钮样式
   static ButtonStyle directionButtonStyle = ElevatedButton.styleFrom(
     shape: const CircleBorder(),
-    padding: const EdgeInsets.all(16),
-    backgroundColor: Color(0xFF3A3A3A),
+    padding: const EdgeInsets.all(20),
+    backgroundColor: Color(0xFF1A1A2E),
     foregroundColor: Color(0xFF00E5FF),
-    elevation: 8,
-    shadowColor: Color(0xFF00E5FF).withOpacity(0.5),
+    elevation: 10,
+    shadowColor: Color(0xFF00E5FF).withOpacity(0.6),
+  ).copyWith(
+    overlayColor: MaterialStateProperty.all(Color(0xFF00E5FF).withOpacity(0.2)),
   );
   
   static ButtonStyle getActionButtonStyle(GameState gameState) {
@@ -93,22 +95,29 @@ class GameTheme {
     return ElevatedButton.styleFrom(
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      elevation: 8,
-      shadowColor: backgroundColor.withOpacity(0.5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      elevation: 10,
+      shadowColor: backgroundColor.withOpacity(0.6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ).copyWith(
+      overlayColor: MaterialStateProperty.all(foregroundColor.withOpacity(0.2)),
     );
   }
   
   // 文本样式
   static TextStyle scoreTextStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: FontWeight.bold,
     color: scoreColor,
     shadows: [
       Shadow(
-        color: scoreGlowColor.withOpacity(0.8),
-        blurRadius: 10,
+        color: scoreGlowColor.withOpacity(0.9),
+        blurRadius: 12,
+        offset: Offset(0, 0),
+      ),
+      Shadow(
+        color: scoreGlowColor.withOpacity(0.5),
+        blurRadius: 20,
         offset: Offset(0, 0),
       ),
     ],
@@ -116,13 +125,18 @@ class GameTheme {
   );
   
   static TextStyle gameOverTextStyle = const TextStyle(
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: FontWeight.bold,
     color: Colors.white,
     shadows: [
       Shadow(
         color: Color(0xFFFF1744),
-        blurRadius: 15,
+        blurRadius: 20,
+        offset: Offset(0, 0),
+      ),
+      Shadow(
+        color: Color(0xFFFF1744),
+        blurRadius: 40,
         offset: Offset(0, 0),
       ),
     ],
